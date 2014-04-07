@@ -1,0 +1,408 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Sistemas Operativos y Persistencia
+%%%%%%%%%%%%%%%%%%%%%% jbgarcia@uvigo.es
+\documentclass{article}
+
+\title{Sistemas Operativos y Persistencia}
+\author{Garc\'{\i}a Perez-Schofield J. Baltasar.
+   \and Departamento de Inform\'atica. Universidad de Vigo, Espa\~na(Spain).
+   \and jbgarcia@uvigo.es
+}
+
+
+
+\begin{document}
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Abstract %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{abstract}
+Los sistemas de programaci\'on persistentes realizan autom\'aticamente la labor de almacenamiento y
+recuperaci\'on de las estructuras de datos de las aplicaciones. Las ventajas de esta automatizaci\'on son
+principalmente tres: el eliminar una parte de la aplicaci\'on que es tediosa de programar, repetitiva y
+que supone un tama\~no considerable de l\'ineas de c\'odigo; eliminar los errores derivados de la
+programaci\'on de las partes de la aplicaci\'on anteriores; y, finalmente, eliminar la diferenciaci\'on
+entre memoria principal y secundario, siendo un todo cont\'inuo para el programador.
+Los sistemas operativos de la actualidad se basan en el dise\~no del sistema operativo UNIX,
+creado en los a\~nos 70. Su filosof\'ia de trabajo se basa en la met\'afora de ficheros: cualquier elemento
+del sistema operativo (driver, proceso en memoria ... etc), puede ser tratado como un fichero, de
+forma que se puede abrir, leer, y cerrar. En este sentido, el estancamiento en sistemas operativos es
+patente. El avance en este campo ha venido de la mano de los interfaces de usuario: \'estos permiten
+obtener una visi\'on del computador orientada a objetos hasta, un cierto grado, ya que el hecho de
+estar basados en un sistema operativo tradicional supone varias limitaciones. En este coloquio se
+examina esta situaci\'on en detalle, y se propone una soluci\'on basada en sistemas operativos
+orientados a objetos.
+\end{abstract}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Introduci\'on %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introducci\'on}
+"Persistencia" es un concepto asociado a la orientaci\'on a objetos: se trata, ni m\'as, ni menos,
+de poder almacenar y recuperar objetos, de igual forma que se puede almacenar y recuperar
+un entero, una cadena, o un flotante. 
+
+Por otra parte, el sistema operativo, como es bien sabido, es el software m\'inimo que
+precisa un ordenador para poder funcionar, ofreciendo las posibles funcionalidades
+del hardware al usuario. 
+
+
+En este art\'iculo, se presenta la evoluci\'on de ambos conceptos, y la relaci\'on entre ellos.
+
+
+\subsection{Persistencia}
+El grado de transparencia que un sistema orientado a objetos
+debe proporcionar para que su mecanismo de salvaguarda y recuperaci\'on de objetos sea
+considerado como persistente var\'ia de un sistema a otro y de un autor a otro.
+Sin embargo, se acepta globalmente un tipo de persistencia especial, la 
+"Persistencia Ortogonal", (ortogonalidad en el sentido de independencia)
+que se basa en tres principios (\cite{Atkinson&Morrison, 1995}):
+\begin{itemize}
+\item \textbf{Independencia del tipo:} Un objeto puede ser almacenado y recuperado sin importar
+de qu\'e tipo o clase es.
+\item \textbf{Independencia del trato:} No deber\'ian existir diferencias en el trato entre objetos
+persistentes y no persistentes.
+\item \textbf{Transitividad de persistencia:} La decisi\'on de si un objeto debe ser o no persistente
+corresponde al sistema, no al programador, y normalmente \'esto se consigue mediante
+alg\'un algoritmo de referencia desde una ra\'iz persistente.
+\end{itemize}
+Lo que ha llegado a los lenguajes de programaci\'on orientados a objetos, de persistencia,
+es m\'as bien poco. Mientras que C++ incorpora el mismo mecanismo \cite{García Perez-Schofield&Pérez Cota, 1998}
+que ya ten\'ia C (\verb"fwrite(f, &Obj, sizeof(obj), 1);"), 
+Java avanza un poco m\'as e incorpora un mecanismo
+de serializaci\'on m\'as avanzado (\cite{Naughton, 1996}), que permite serializar el cierre persistente 
+(\cite{Atkinson&Morrison, 1995})(es decir,
+todos los objetos relacionados con uno dado).
+\subsection{Sistemas Operativos}
+Los sistemas operativos han evolucionado sobre todo desde la aparici\'on del primer
+sistema operativo "popular", el sistema operativo UNIX (Copyright SCO/Caldera, inventado en Laboratorios Bell, 1969). 
+Varios sistemas operativos
+aparecieron m\'as o menos m\'as tarde, como CP/M, MS-DOS, Windows, 
+Solaris(Copyright Digital Research y Microsoft, respectivamente.), etc.
+
+Si bien al principio pod\'ia decirse que UNIX era para ordenadores "grandes" (\textit{mainframes}
+de 16 \'o 32 bits), y que CP/M y MS-DOS (y posteriormente, Windows), eran para ordenadores
+"peque\~nos" (de 8 y 16 bits), \'esta divisi\'on ya no existe, puesto que los ordenadores
+considerados "peque\~nos" han crecido hasta igualar y superar en prestaciones a los "grandes".
+\'esto conlleva que los sistemas operativos han tenido que "crecer" a su vez en complejidad
+y en capacidad (si bien \'esto ha conllevado a su vez la desaparici\'on de varios
+sistemas operativos, como CP/M, MS-DOS, y la rama Windows9x de Windows, cuyo \'unico representante
+es ya Windows Millenium.)
+
+Pero por si esto fuera poco, al igualarse la capacidad de los ordenadores a los \textit{mainframes},
+ha sido posible portar los sistemas operativos de \'estos \'ultimos a los primeros, dando como
+resultado "nuevos" sistemas operativos (como Linux o Solaris para PC).
+
+Y \'esto constituye todo atisbo de evoluci\'on en los sistemas operativos desde UNIX (\cite{Balch et al., 1989}).
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Sistemas Operativos %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Sistemas Operativos}
+\subsection{Historia de los Sistemas Operativos Windows y Linux}
+La evoluci\'on de los sistemas operativos empieza, sin duda, con la creaci\'on de Unix en los
+laboratorios AT\&T. Este sistema operativo estaba dirigido a \textit{mainframes}, y por
+tanto, los ordenadores de consumo de la \'epoca (los microordenadores), no pod\'ian
+ejecutarlo, teniendo otros sistemas operativos, como eran CP/M y MS-DOS.
+El primero se escribi\'o en 1973 por Gary Killdall, para ser finalmente desarrollado
+completamente por \'el mismo, ya  como Digital Research, en 1977.
+
+El segundo es posterior (y algunos apuntan que sospechosamente parecido \dots), 
+apareciendo en 1981.
+
+Ambos eran sistemas operativos que imitaban UNIX en la medida de lo posible, si bien ambos
+eran monotarea y monousuario.
+
+\subsubsection{Microsoft Windows}
+En 1985 aparece en el mercado Windows 1.0, una \textit{shell} para MS-DOS. 
+Conociendo los problemas que Digital Research hab\'ia tenido con Apple, debido a GEM,
+Microsoft vari\'o ligeramente el aspecto de su sistema.
+En 1990 aparece Windows 3.0, que ya presume de multitarea. Las posibilidades de multitarea
+de Windows 3.0 deber\'ian catalogarse m\'as bien como multiprogramaci\'on, puesto que Windows
+aprovechaba el nuevo vector de interrupci\'on que MS-DOS ejecutaba cuando se quedaba esperando
+por una operaci\'on de entrada/salida (el PC ten\'ia chip de DMA desde el principio, si
+bien las primeras versiones de DOS eran incapaces de sacarle partido, por lo que entraban
+en un bucle infinito cada vez que un programa se interrump\'ia con una operaci\'on de entrada/salida,
+esperando que el vector de interrupci\'on del chip DMA le despertase).
+
+En 1993, desarrollado desde cero, y emulando la forma de trabajar de UNIX de una forma
+m\'as que evidente (exceptuando que el gestor de ventanas est\'a permanentemente cargado),
+aparece Windows NT, que se presenta dividido en "cliente" (Windows NT Workstation y "servidor"
+Windows NT Server).
+
+En 1995 Microsoft comercializa Windows 95, ya con multitarea real, dentro de las
+posibilidades de la arquitectura de este sistema operativo. Ya dejaba de ser una \textit{shell}
+de MS-DOS, si bien necesitaba de \'este para arrancar.
+
+Entre 2000 y 2001 aparecen Windows 98, Windows NT 4.0, y finalmente, se anuncia el abandono
+de la l\'inea de Windows 95 (cuyo \'ultimo representante es Windows Me), y el establecimiento
+de Windows NT como \'unico sistema operativo. As\'i, se comercializa Windows XP Professional,
+y Windows XP Home Edition.
+\subsubsection{GNU Linux}
+
+En 1984, Richard Stallman abandona el Massachusets Institute of Technology, y dedica su tiempo
+a desarrollar el software GNU (siglas recursivas que significan "GNU is not Unix").
+Se trata de versiones abiertas (cualquiera puede obtener el c\'odigo) de aplicaciones
+como emacs, vi, sh, etc.
+
+En 1991, Linus Torvalds escribe un kernel para PC, bautizado como Linux, con el objetivo de poder trabajar con
+el sistema Minix en su propio ordenador.
+
+De la fusi\'on de ambos proyectos nace GNU Linux, un sistema operativo fuertemente basado
+en Unix. Minix es una versi\'on de Unix para PC, menos potente que el Linux actual, mientras
+que la colecci\'on de programas GNU no es m\'as que la colecci\'on de aplicaciones "est\'andar" que
+rodean al kernel de Unix.
+
+Actualmente, pueden encontrarse en el mercado varias distribuciones, Mandrake, Red Hat,
+SuSE ...
+\subsection{Hitos en la evoluci\'on de los Sistemas Operativos}
+UNIX es sin duda el gran "padre" de los sistemas operativos: todos los sistemas operativos
+\textbf{comerciales} de la actualidad est\'an basados en su filosof\'ia de trabajo: la
+\textit{met\'afora de ficheros}.
+
+Este concepto quiz\'as es tan habitual que pasa desapercibido en el modo de trabajo diario:
+se trata de representar todos los conceptos incluidos en el sistema operativo (memoria,
+proceso, gestor de dispositivo ...) como especializaciones del concepto de fichero.
+
+As\'i, por ejemplo, en UNIX y Linux, todos los procesos activos se encuentran 
+en la carpeta /proc, mientras que los gestores de dispositivos est\'an en la carpeta /dev. 
+En MS-DOS, se puede escribir directamente en la impresora con un comando como 
+\verb"echo hola > PRN", mientras que en Windows la llamada del
+API \verb"CreateFile()" permite abrir
+archivos, particiones del disco duro u otros dispositivos.
+
+El segundo hito en la historia de los sistemas operativos es SmallTalk, desarrollado
+a principios de los a\~nos 70. SmallTalk introduc\'ia varias ideas novedosas, como la
+programci\'on orientada a objetos, enfocada desde un punto de vista de pureza total,
+y una interfaz de usuario novedosa. Se trataba de disponer las diferentes tareas en
+ejecuci\'on como ventanas, de forma que actuaban como papeles colocados encima de un
+escritorio. As\'i, exist\'ia un escritorio con tal nombre e incluso una papelera.
+Esta idea de interfaz de usuario ser\'ia empleada por Apple para el interfaz de usuario
+de su sistema operativo, MacOS,
+y posteriormente por otros como Digital Research con Gem, y Microsoft con Windows.
+
+A pesar de la pronta aparici\'on de estos avances t\'ecnicos, 30 a\~nos despu\'es, los sistemas
+operativos contin\'uan siendo b\'asicamente los mismos, es decir, derivados arquitecturalmente
+de Unix.
+
+Sin embargo, es en la interfaz de usuario donde ha aparecido la evoluci\'on m\'as interesante,
+ofreciendo al usuario una \textit{vista} orientada a objetos de los ficheros a los que
+accede el ordenador. As\'i, utilizando alg\'un rasgo de estos ficheros, el sistema los trata
+de forma distinta. En Linux, este "rasgo" distintivo es un n\'umero llamado "MAGIC" en la 
+cabecera del archivo, mientras que en windows se trata simplemente de su
+extensi\'on (de ah\'i que Windows muestre un mensaje de alerta cada vez que se le
+cambia la extensi\'on a un archivo).
+
+De esta forma, pulsando con el bot\'on derecho del rat\'on, el men\'u de acciones que se le presenta
+al usuario es distinto dependiendo de si el archivo contiene una imagen o un documento
+de texto.
+
+%%%%%%%%%%%%%% Sistemas Operativos Orientados a Objetos %%%%%%%%%%%%%%%%%%%%%%
+\subsection{Sistemas Operativos Orientados a Objetos}
+
+Ambos conceptos (persistencia y sistemas operativos), pueden fusionarse en uno
+solo: en el \textit{SOOO (Sistema Operativo Orientado a Objetos)}. Dado que en lugar
+de emplear ficheros, como en un sistema operativo tradicional, se emplear\'an
+objetos, \'estos objetos deber\'an de tener, por necesidad, alguna forma de ser
+almacenados y recuperados. Este mecanismo ser\'a extensible a los objetos
+que el usuario pueda crear o modificar.
+
+Existen en la actualidad varios SOOO, pero su uso es, al menos por el
+momento, totalmente experimental. Por ejemplo, EROS (\cite{Shapiro et al., 1996}), basa su mecanismo
+de persistencia en proceso de \textit{checkpointing}, esto es, la realizaci\'on
+de volcados de memoria a disco cada determinado tiempo. Para que sea factible
+la utilizaci\'on de este mecanismo, es necesario que el volcado sea tan s\'olo
+incremental, es decir, que se guarden s\'olo aquellos espacios de memoria que
+han sido modificados desd eel \'ultimo \textit{checkpoint}. As\'i, el \'ultimo
+\textit{checkpoint} sirve de punto de referencia para reiniciar el sistema
+en su \'ultimo momento estable.
+
+Los SOOO no se han impuesto, es cierto, debido a que, principalmente, es
+dif\'icil obtener el mismo rendimiento con un SOOO que con un sistema operativo
+tradicional. Sin embargo, existen otras razones:
+
+\begin{itemize}
+\item \textbf{Conservadurismo: cambio de filosof\'ia de trabajo, de ficheros a objetos.}
+Por alguna raz\'on, la persistencia es dif\'icil de entender para los programadores.
+Probablemente sea debido a que el esquema de trabajo: "entrada-proceso-salida"
+se haya visto reducido notablemente en sus partes primera y tercera.
+\item \textbf{Compatibilidad hacia atr\'as nula:} Repentinamente, los sistemas operativos
+ser\'ian incompatibles con todos los anteriores. Ser\'ia necesario, en todo caso,
+crear alguna forma de conversi\'on de los programas y datos antiguos a los nuevos,
+puesto que de otra forma ser\'ia inadmisible.
+\item \textbf{Dificultades inherentes a los sistemas operativos:} sobre todo en
+lo relativo a inicializaci\'on (\textit{bootstrapping}), y a manejo de
+dispositivos, que hacen m\'as simple el apoyarse en versiones del sistema operativo
+anteriores.
+\end{itemize}
+
+
+%%%%%%%%%%% El modelo de persistencia basado en contenedores %%%%%%%%%%%%%%%%
+
+\section{El modelo de persistencia basado en contenedores}
+Si bien el modelo de persistencia m\'as utilizado es el ortogonal, existen
+alternativas a \'el (por ejemplo \cite{Shapiro et al., 1997}). El autor propone, a su vez, otro modelo,
+el de persistencia basada en contenedores (\cite{García Perez-Schofield, 2002}).
+
+Un contenedor no es m\'as que un objeto de gran grano, u objeto complejo; un objeto
+que, en definitiva, alberga en su interior a otros objetos, sea mediante
+adici\'on directa o mediante punteros.
+
+\subsection{Clustering}
+El \textit{clustering} o particionamiento es la forma de agrupar objetos a la hora de
+almacenarlos en el disco duro. Existen m\'ultiples formas de \textit{clustering},
+incluyendo las clases y su objetos asociados (\cite{García Perez-Schofield, 2002}) o incluso los objetos y
+las clases relacionadas por el momento de su creaci\'on.
+
+En el caso del modelo ortogonal, el clustering est\'a en todo momento oculto al
+programador, debido a las fuertes restricciones que padece (en favor de una
+transparencia completa). As\'i, el estudio de \textit{clustering} en este campo
+se centra sobre todo en automatizaciones del mismo, e incluso readaptaciones
+din\'amicas (\cite{Darmon et al., 2000}).
+
+En el caso del modelo basado en contenedores, el particionamiento del almacenamiento
+persistente es llevado a cabo por el mismo usuario (\cite{García Perez-Schofield, 2002}). Al seguir una met\'afora
+basada en directorios, es posible delegar esta funci\'on en el usuario, que,
+sin saberlo, particiona el almacenamiento persistente como se particiona
+un disco duro o cualquier dispositivo.
+
+Esto impide considerar a este modelo como inclu\'ido o como una especializaci\'on
+del modelo ortogonal, puesto que el usuario, en definitiva, debe indicar d\'onde
+guardar el objeto (al entrar en un directorio/contenedor), lo que rompe la 
+ortogonalidad al trato; as\'i mismo, si bien dentro de un contenedor el sistema
+realiza recolecci\'on de basura (sin perjucicio del
+sistema de operadores propio de C++ \verb"new(), delete()").
+de C++ \cite{Ellis & Stroustrup, 1990}), cada contenedor debe ser eliminado, en su caso, por el usuario,
+lo cual rompe la tercera norma de transitividad de la persistencia.
+
+\subsection{Modelo de memoria}
+
+En los sistemas persistentes ortogonales, el modelo de memoria seguido es un
+gran espacio de direcciones totalmente cont\'inuo (\cite{Atkinson&Morrison, 1995}). No existe, adem\'as, como se
+puede deducir, diferenciaci\'on entre memoria principal y memoria secundaria.
+
+Este modelo de memoria tiene un grave inconveniente: si por alguna raz\'on, un
+objeto en memoria se corrompe (o simplemente, se introduce un objeto "malicioso"
+en el sistema), \'este est\'a completamente desprotegido, puesto que toda el
+espacio de direcciones es accesible. As\'i, un fallo en un puntero podr\'ia provocar
+que todos los objetos relacionados con el objeto que produce el fallo se
+corrompieran. En un caso a\'un peor, ser\'ia te\'oricamente posible que la
+corrupci\'on llegara a alcanzar a todo el sistema.
+
+Los sistemas que siguen este modelo resuelven este problema empleando los lenguajes
+llamados "seguros respecto al tipo" (\cite{Atkinson&Morrison, 1995}). As\'i, el usuario, al contrario que
+sucede en lenguajes como C o C++, no tiene acceso a punteros que puedan
+manejar a su antojo, sino a "referencias" (siguiendo la terminolog\'ia Java \cite{Naughton, 1996})
+que son inmodificables por el usuario.
+
+En el modelo basado en contenedores, el espacio de direcciones est\'a totalmente
+particionado, empleando de nuevo los mismos contenedores. Cuando un usuario
+trabaja en un contenedor, el espacio de direcciones al que tiene acceso es aquel
+abarcado por el propio contenedor, y no m\'as. \'esto permite el empleo de lenguajes
+no seguros respecto al tipo, como C++. De esta forma, de existir alg\'un
+error, \'este queda enmarcado dentro de un espacio limitado, pudiendo corromper,
+llegado el caso, todos los objetos en el contenedor, pero no m\'as que \'estos.
+
+Existe una excepci\'on a este modelo totalmente particionado. Ser\'ia imposible
+trabajar de forma efectiva en este modelo si todo aquello que el usuario necesita
+para realizar una tarea s\'olo puede estar en un determinado contenedor. As\'i,
+se permite desde el contenedor emplear objetos en otros contenedores, pero s\'olo
+en modo de lectura (\cite{García Perez-Schofield, 2002}).
+
+\subsection{Funcionamiento}
+
+En esta secci\'on se muestra un ejemplo real, si bien muy simple, de un programa
+que lee unos n\'umeros de un fichero, tal y como se ve en el punto siguiente. Las
+contrapartidas persistentes se encuentran en los siguientes puntos. N\'otese que
+en un sistema persistente los ficheros no existen, puesto que no son necesarios:
+los objetos (en este caso, una lista de n\'umeros simples) se almacenan directamente.
+\subsubsection{ISO C++}
+La versi\'on de este programa en C++ est\'andar es simple. 
+El fichero es abierto,
+y, a medida que los n\'umeros son le\'idos del mismo, \'estos son mostrados en la
+consola.
+\begin{verbatim}
+int main(void) {
+      int x;
+      FILE *f  = fopen("datos.dat");
+      if (f!=NULL) {
+            do {
+                  fread(&x, sizeof(int), 1, f);
+                  cout << x << endl;
+            } while(!feof(f));
+            fclose(f);
+      } else cerr << "Error de E/S" << endl;
+}
+\end{verbatim}
+\subsubsection{PJama}
+PJama (\cite{Atkinson&Jordan, 2000}) es un sistema persistente basado en Java. Existen algunas
+clases a\~nadidas que facilitan la comunicaci\'on con el almacenamiento persistente,
+como \verb"PJavaStore". Los objetos se recuperan por su nombre, ya que no existe ning\'un
+tipo de particionamiento visible para el usuario.
+
+\begin{verbatim}
+public class ejemplo {
+  public static void main(void) {
+      PJavaStore pjs = PJavaStore.getStore();
+      int [] vectnum = (int []) pjs.getPRoot("vect_ejemplo");
+      for (int j = 0; j < vectnum.size; ++j) 
+            System.out.println(vectnum[j]);
+  }
+}
+\end{verbatim}
+\subsubsection{Barbados}
+En Barbados, no es necesario crear ninguna clase especial o funci\'on especial
+como punto de entrada, por lo que se ha elegido una funci\'on simple como
+la siguiente. El vector (un vector primitivo de C) es le\'ido de un contenedor
+donde est\'a almacenado y es mostrado en la consola.
+
+\begin{verbatim}
+void ponVectorEjemplo(void) {
+      int *vectnum = /vector/vect_num;
+      while (*vectnum != 0) 
+            cout << *(vectnum++) << endl;
+}
+\end{verbatim}
+El proceso que ser\'ia necesario seguir para poder crear ese vector en Barbados
+ser\'ia el siguiente:
+
+\begin{verbatim}
+mkdir(vector);
+cd(vector);
+int *vect_num = new int[3];
+vect_num[0] = 1;
+vect_num[1] = 2;
+vect_num[2] = 0;
+cd(..);
+\end{verbatim}
+
+Una vez creado, el sistema puede cerrarse con seguridad: la pr\'oxima vez
+que se abra el vector habr\'a sido recuperado con normalidad, y la funci\'on
+\verb"ponVectorEjemplo()" podr\'a ser ejecutada sin que antes sea necesaria
+ning\'un tipo de intervenci\'on por parte del usuario para cargar los n\'umeros.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Conclusiones %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Conclusiones}
+En este art\'iculo se ha presentado la evoluci\'on de los sistemas operativos,
+que se puede concluir que en materia de arquitectura de los mismos, esta 
+evoluci\'on ha sido casi nula. Tambi\'en se ha introducido el campo de
+investigaci\'on sobre persistencia, para dar a entender una posible
+alternativa, que no es otra que la de los sistemas operativos orientados a
+objetos.
+
+Se han presentado tambi\'en las razones que justifican un nuevo modelo de
+persistencia (esto es, simplificaci\'on que conlleva un impacto mayor en
+rendimiento), ofreciendo este nuevo modelo como alternativa que podr\'ia dar
+pi\'e a la entrada de los SOOO en el trabajo cotidiano. Si bien se ha explicado
+que esta entrada est\'a limitada por varios factores de considerable importancia.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Referencias %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Referencias}
+
+
+\end{document}
